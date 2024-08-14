@@ -24,17 +24,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
+                    {{-- @php
                         $tmparr = [];
-                    @endphp
+                    @endphp --}}
                     @foreach($alternatives as $alternative1)
                         @foreach($alternatives as $alternative2)
-                            {{-- @if($alternative1->id != $alternative2->id) --}}
-                            @if($alternative1->id != $alternative2->id && !in_array($alternative2->id, $tmparr))
+                            @if($alternative1->id != $alternative2->id)
+                            {{-- @if($alternative1->id != $alternative2->id && !in_array($alternative2->id, $tmparr)) --}}
                                 <tr>
                                     <td>{{ $alternative1->name }}</td>
                                     <td>
                                         <select name="comparisons[{{ $alternative1->id }}_{{ $alternative2->id }}][value]" class="form-control">
+                                            <option value="1/9">-9 Sama Penting</option>
+                                            <option value="1/8">-8 Sama Penting</option>
+                                            <option value="1/7">-7 Sama Penting</option>
+                                            <option value="1/6">-6 Sama Penting</option>
+                                            <option value="1/5">-5 Sama Penting</option>
+                                            <option value="1/4">-4 Sama Penting</option>
+                                            <option value="1/3">-3 Sama Penting</option>
+                                            <option value="1/2">-2 Sama Penting</option>
                                             <option value="1">1 Sama Penting</option>
                                             <option value="2">2 Diantara Sama Dan Cukup</option>
                                             <option value="3">3 Cukup Penting</option>
@@ -50,9 +58,9 @@
                                 </tr>
                             @endif
                         @endforeach
-                        @php
-                            array_push($tmparr, $alternative1->id);
-                        @endphp
+                        {{-- @php
+                            // array_push($tmparr, $alternative1->id);
+                        @endphp --}}
                     @endforeach
                 </tbody>
             </table>

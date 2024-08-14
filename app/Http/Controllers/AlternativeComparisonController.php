@@ -42,12 +42,12 @@ class AlternativeComparisonController extends Controller
                 ['criteria_id' => $request->criteria_id, 'alternative_id_1' => $alt1, 'alternative_id_2' => $alt2],
                 ['value' => $val]
             );
-            if($val != 0) {
-                AlternativeComparison::updateOrCreate(
-                    ['criteria_id' => $request->criteria_id, 'alternative_id_1' => $alt1, 'alternative_id_2' => $alt2],
-                    ['value' => 1 / $val]
-                );
-            }
+            // if($val != 0) {
+            //     AlternativeComparison::updateOrCreate(
+            //         ['criteria_id' => $request->criteria_id, 'alternative_id_1' => $alt1, 'alternative_id_2' => $alt2],
+            //         ['value' => 1 / $val]
+            //     );
+            // }
 
 
         }

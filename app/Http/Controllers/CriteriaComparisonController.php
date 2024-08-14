@@ -65,16 +65,16 @@ class CriteriaComparisonController extends Controller
                 ['value' => $val]
             );
 
-            if($val != 0) {
-                // Simpan perbandingan balik (reciprocal)
-                CriteriaComparison::updateOrCreate(
-                    [
-                        'criteria_id_1' => $crt1,
-                        'criteria_id_2' => $crt2
-                    ],
-                    ['value' => 1 / $val]
-                );
-            }
+            // if($val != 0) {
+            //     // Simpan perbandingan balik (reciprocal)
+            //     CriteriaComparison::updateOrCreate(
+            //         [
+            //             'criteria_id_1' => $crt1,
+            //             'criteria_id_2' => $crt2
+            //         ],
+            //         ['value' => 1 / $val]
+            //     );
+            // }
             // CriteriaComparison::updateOrCreate(
             //     [
             //         'criteria_id_1' => $comparison['criteria_id_1'],

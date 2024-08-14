@@ -17,13 +17,15 @@ class ResultController extends Controller
 
         // Step 1: Calculate Criteria Weights
         $criteriaWeights = $this->calculateCriteriaWeights($criteria);
+        // dd($criteriaWeights);
 
         // Step 2: Calculate Alternative Weights for each Criteria
         $alternativeWeights = $this->calculateAlternativeWeights($criteria, $alternatives);
+        // dd($alternativeWeights);
 
         // Step 3: Calculate Final Scores for each Alternative
         $finalScores = $this->calculateFinalScores($criteriaWeights, $alternativeWeights, $alternatives);
-        // dd($alternativeWeights);
+        // dd($finalScores);
 
         // Step 4: Sort Alternatives by Final Scores
         $rankedAlternatives = collect($finalScores)->sortByDesc('score')->values()->all();
@@ -45,29 +47,41 @@ class ResultController extends Controller
                     $comparison = CriteriaComparison::where('criteria_id_1', $criterion1->id)
                         ->where('criteria_id_2', $criterion2->id)
                         ->first();
-                        $tmpvalcrit = $comparison ? $comparison->value : (CriteriaComparison::where('criteria_id_1', $criterion2->id)
-                        ->where('criteria_id_2', $criterion1->id)
-                        ->first()?->value ?? 0);
-                        if($tmpvalcrit != 0) {
-                            $tmpvalcrit = 1/$tmpvalcrit;
-                        }
+                    $tmpvalcrit = $comparison
+                        ? $comparison->value
+                        : CriteriaComparison::where('criteria_id_1', $criterion2->id)
+                                ->where('criteria_id_2', $criterion1->id)
+                                ->first()?->value ?? 0;
+                    if ($tmpvalcrit != 0) {
+                        $tmpvalcrit = 1 / $tmpvalcrit;
+                    }
                     $matrix[$i][$j] = $tmpvalcrit;
-                    // $matrix[$i][$j] = $comparison ? $comparison->value : ((1 / CriteriaComparison::where('criteria_id_1', $criterion2->id)
-                    //     ->where('criteria_id_2', $criterion1->id)
-                    //     ->first()?->value ?? 0));
                 }
             }
         }
 
-        // Normalize the matrix and calculate weights
-        $criteriaWeights = [];
-        for ($i = 0; $i < $size; $i++) {
-            $criteriaWeights[$i] = array_sum(array_column($matrix, $i));
+        // dd($matrix);
+
+        // Normalize the matrix
+        $normalizedMatrix = [];
+        for ($j = 0; $j < $size; $j++) {
+            $colSum = array_sum(array_column($matrix, $j));
+            for ($i = 0; $i < $size; $i++) {
+                $normalizedMatrix[$i][$j] = $matrix[$i][$j] / $colSum;
+            }
         }
 
-        $criteriaWeights = array_map(function ($weight) use ($criteriaWeights) {
-            return $weight / array_sum($criteriaWeights);
-        }, $criteriaWeights);
+        // dd($normalizedMatrix);
+
+        // Calculate weights (average of rows)
+        $criteriaWeights = [];
+        for ($i = 0; $i < $size; $i++) {
+            $criteriaWeights[$i] = array_sum($normalizedMatrix[$i]) / $size;
+        }
+
+        $criteriaWeights = array_reverse($criteriaWeights);
+
+        // dd($criteriaWeights);
 
         return $criteriaWeights;
     }
@@ -90,33 +104,38 @@ class ResultController extends Controller
                             ->where('alternative_id_1', $alternative1->id)
                             ->where('alternative_id_2', $alternative2->id)
                             ->first();
-                            $tmpvalalt = $comparison ? $comparison->value : (AlternativeComparison::where('criteria_id', $criterion->id)
-                            ->where('alternative_id_1', $alternative2->id)
-                            ->where('alternative_id_2', $alternative1->id)
-                            ->first()?->value ?? 0);
-                            if($tmpvalalt != 0) {
-                                $tmpvalalt = 1/$tmpvalalt;
-                            }
-                            $matrix[$i][$j] = $tmpvalalt;
-                        // $matrix[$i][$j] = $comparison ? $comparison->value : (1 / AlternativeComparison::where('criteria_id', $criterion->id)
-                        //     ->where('alternative_id_1', $alternative2->id)
-                        //     ->where('alternative_id_2', $alternative1->id)
-                        //     ->first()->value);
+                        $tmpvalalt = $comparison
+                            ? $comparison->value
+                            : AlternativeComparison::where('criteria_id', $criterion->id)
+                                    ->where('alternative_id_1', $alternative2->id)
+                                    ->where('alternative_id_2', $alternative1->id)
+                                    ->first()?->value ?? 0;
+                        if ($tmpvalalt != 0) {
+                            $tmpvalalt = 1 / $tmpvalalt;
+                        }
+                        $matrix[$i][$j] = $tmpvalalt;
                     }
                 }
             }
 
-            // Normalize the matrix and calculate weights
-            $weights = [];
-            for ($i = 0; $i < $size; $i++) {
-                $weights[$i] = array_sum(array_column($matrix, $i));
+            // Normalize the matrix
+            $normalizedMatrix = [];
+            for ($j = 0; $j < $size; $j++) {
+                $colSum = array_sum(array_column($matrix, $j));
+                for ($i = 0; $i < $size; $i++) {
+                    $normalizedMatrix[$i][$j] = $matrix[$i][$j] / $colSum;
+                }
             }
 
-            $weights = array_map(function ($weight) use ($weights) {
-                return $weight / array_sum($weights);
-            }, $weights);
+            // Calculate weights (average of rows)
+            $weights = [];
+            for ($i = 0; $i < $size; $i++) {
+                $weights[$i] = array_sum($normalizedMatrix[$i]) / $size;
+            }
 
-            $alternativeWeights[$criterion->id] = $weights;
+            // dd($weights);
+
+            $alternativeWeights[$criterion->id] = array_reverse($weights);
         }
 
         return $alternativeWeights;
@@ -124,23 +143,24 @@ class ResultController extends Controller
 
     private function calculateFinalScores($criteriaWeights, $alternativeWeights, $alternatives)
     {
-        // dd($alternativeWeights);
         $finalScores = [];
+        // dd($criteriaWeights);
+        // dd($alternativeWeights);
+        // dd($alternatives);
 
         foreach ($alternatives as $i => $alternative) {
             $score = 0;
 
             foreach ($criteriaWeights as $j => $criteriaWeight) {
-                $score += $criteriaWeight * $alternativeWeights[$j +1][$i];
+                $score += $criteriaWeight * $alternativeWeights[$j + 1][$i];
             }
-// dd($criteriaWeight);
+
             $finalScores[] = [
                 'alternative' => $alternative->name,
-                'score' => $score
+                'score' => $score,
             ];
         }
 
         return $finalScores;
     }
 }
-
