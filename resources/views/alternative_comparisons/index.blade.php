@@ -24,9 +24,13 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $tmparr = [];
+                    @endphp
                     @foreach($alternatives as $alternative1)
                         @foreach($alternatives as $alternative2)
-                            @if($alternative1->id != $alternative2->id)
+                            {{-- @if($alternative1->id != $alternative2->id) --}}
+                            @if($alternative1->id != $alternative2->id && !in_array($alternative2->id, $tmparr))
                                 <tr>
                                     <td>{{ $alternative1->name }}</td>
                                     <td>
@@ -46,6 +50,9 @@
                                 </tr>
                             @endif
                         @endforeach
+                        @php
+                            array_push($tmparr, $alternative1->id);
+                        @endphp
                     @endforeach
                 </tbody>
             </table>

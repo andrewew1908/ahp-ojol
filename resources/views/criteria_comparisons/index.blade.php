@@ -18,9 +18,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $tmparr = [];
+                    @endphp
                     @foreach($criteria as $criterion1)
                         @foreach($criteria as $criterion2)
-                            @if($criterion1->id != $criterion2->id)
+                            @if($criterion1->id != $criterion2->id && !in_array($criterion2->id, $tmparr))
                                 <tr>
                                     <td>{{ $criterion1->name }}</td>
                                     <td>
@@ -40,6 +43,9 @@
                                 </tr>
                             @endif
                         @endforeach
+                        @php
+                            array_push($tmparr, $criterion1->id);
+                        @endphp
                     @endforeach
                 </tbody>
             </table>
