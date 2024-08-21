@@ -26,11 +26,11 @@
 
     <nav class="mt-4">
         <ul>
-            <li><a href="{{ route('criteria.index') }}" class="btn btn-primary">Criteria</a></li>
-            <li><a href="{{ route('alternatives.index') }}" class="btn btn-primary">Alternatives</a></li>
-            <li><a href="{{ route('criteria_comparisons.index') }}" class="btn btn-primary">Criteria Comparison</a></li>
-            <li><a href="{{ route('alternative-comparisons.index') }}" class="btn btn-primary">Alternative Comparison</a></li>
-            <li><a href="{{ route('results.index') }}" class="btn btn-primary">Ranking Results</a></li>
+            <li><a href="{{ route('criteria.index') }}" class="btn btn-primary">kriteria</a></li>
+            <li><a href="{{ route('alternatives.index') }}" class="btn btn-primary">Merek motor</a></li>
+            <li><a href="{{ route('criteria_comparisons.index') }}" class="btn btn-primary">Perbandingan kriteria</a></li>
+            <li><a href="{{ route('alternative-comparisons.index') }}" class="btn btn-primary">Perbandingan Antar Motor</a></li>
+            <li><a href="{{ route('results.index') }}" class="btn btn-primary">Hasil</a></li>
         </ul>
     </nav>
 </div>

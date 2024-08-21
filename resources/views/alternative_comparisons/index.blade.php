@@ -35,14 +35,14 @@
                                     <td>{{ $alternative1->name }}</td>
                                     <td>
                                         <select name="comparisons[{{ $alternative1->id }}_{{ $alternative2->id }}][value]" class="form-control">
-                                            <option value="1/9">-9 Sama Penting</option>
-                                            <option value="1/8">-8 Sama Penting</option>
-                                            <option value="1/7">-7 Sama Penting</option>
-                                            <option value="1/6">-6 Sama Penting</option>
-                                            <option value="1/5">-5 Sama Penting</option>
-                                            <option value="1/4">-4 Sama Penting</option>
-                                            <option value="1/3">-3 Sama Penting</option>
-                                            <option value="1/2">-2 Sama Penting</option>
+                                            <option value="1/9">-9 tidak ekstrim lebih Penting</option>
+                                            <option value="1/8">-8  Penting</option>
+                                            <option value="1/7">-7  Penting</option>
+                                            <option value="1/6">-6  Penting</option>
+                                            <option value="1/5">-5  Penting</option>
+                                            <option value="1/4">-4  Penting</option>
+                                            <option value="1/3">-3 tidak cukup penting</option>
+                                            <option value="1/2">-2 diantara sama penting dan cukup penting</option>
                                             <option value="1">1 Sama Penting</option>
                                             <option value="2">2 Diantara Sama Dan Cukup</option>
                                             <option value="3">3 Cukup Penting</option>
